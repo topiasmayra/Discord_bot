@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import discord
 from discord.ext import commands
 from imdb import Cinemagoer
@@ -66,3 +67,21 @@ async def on_raw_reaction_add(payload):
 
 
 client.run('MTEwOTA1MjM0MDIyNjUxMDkzMQ.GnAzq1.9EsPJYuEMRhHGthHntp5wz9sWnYViPflTcqQ7s')
+=======
+# This is a sample Python script.
+
+# Press Shift+F10 to execute it or replace it with your code.
+# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+
+
+def print_hi(name):
+    # Use a breakpoint in the code line below to debug your script.
+    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+
+
+# Press the green button in the gutter to run the script.
+if __name__ == '__main__':
+    print_hi('PyCharm')
+
+# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+>>>>>>> b403059e4864333b1c98a80b99553496b42c8d74
