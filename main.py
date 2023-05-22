@@ -1,11 +1,16 @@
-<<<<<<< HEAD
 import discord
 from discord.ext import commands
 from imdb import Cinemagoer
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 
 intents = discord.Intents.all()
 intents.typing = False
 intents.presences = False
+print()
 
 client = discord.Client(intents=intents)
 client = commands.Bot(command_prefix='!', intents=intents)
@@ -66,5 +71,4 @@ async def on_raw_reaction_add(payload):
 # Help command for the bot, that shows what emojies do what.
 
 
-client.run('YOUR TOKEN')
-
+client.run(DISCORD_TOKEN)
