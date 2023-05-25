@@ -1,30 +1,26 @@
 from imdb import Cinemagoer
 import pandas as pd
-import numpy as np
 
 ia = Cinemagoer()
 
-personname = input("Syötä ohjaajan tai näyttelijän nimi: ")
-director = ia.search_person(personname)
-movies1 = ia.get_person_filmography(director[0].personID)
+def my_search_function(personname):
+    director = ia.search_person(personname)[0]
+    director_movies = ia.get_person_filmography(director.personID)
 
+    print(director_movies)
 
+    actor = ia.search_person(personname)[0]
+    actor_movies = ia.get_person_filmography(actor.personID)
 
-filmography = movies1.get('data', {}).get('filmography', {}).get('director', [])
+    # Extracting the filmography
+    filmography_director = director_movies.get('data', {}).get('filmography', {}).get('director', [])
+    filmography_actor = actor_movies.get('data', {}).get('filmography', {}).get('actor', [])
 
-#checking if the filmography is movie or tv series
-kind = [movie['kind'] for movie in filmography ]
+    # Extracting only the titles
+    titles_director = [movie['title'] for movie in filmography_director]
+    titles_actor = [movie['title'] for movie in filmography_actor]
 
-# Extracting only the titles
-titles = [movie['title'] for movie in filmography ]
+    # Creating a DataFrame from the titles
+    df = pd.DataFrame({'Title': titles_director + titles_actor})
 
-# Creating a DataFrame from the titles
-df = pd.DataFrame({'Title': titles})
-
-
-
-# Removing duplicates
-df = df.drop_duplicates(subset=['Title'])
-
-print(df)
-
+    return df
