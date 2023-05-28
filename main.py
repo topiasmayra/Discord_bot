@@ -13,7 +13,6 @@ intents.typing = False
 intents.presences = False
 intents.message_content = True
 intents.message_content=True
-client = discord.Client(intents=intents)
 bot = commands.Bot(command_prefix='!', intents=intents,)
 
 
@@ -46,7 +45,7 @@ async def on_ready():
 
 
 
-@client.event
+@bot.event
 async def on_raw_reaction_add(payload):
     if str(payload.emoji) == '<:Segal:1109089566926835753>':
         channel_id = payload.channel_id
@@ -127,7 +126,7 @@ async def on_message(message):
 
 
 
-@client.event
+@bot.event
 async def on_message(message):
     if message.author == bot.user:
         return
