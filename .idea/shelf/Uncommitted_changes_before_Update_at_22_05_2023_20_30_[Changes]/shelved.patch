@@ -1,0 +1,32 @@
+Index: main.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><<<<<<< HEAD\r\nimport discord\r\nfrom discord.ext import commands\r\nfrom imdb import Cinemagoer\r\n\r\nintents = discord.Intents.all()\r\nintents.typing = False\r\nintents.presences = False\r\n\r\nclient = discord.Client(intents=intents)\r\nclient = commands.Bot(command_prefix='!', intents=intents)\r\n\r\n\r\n@client.event\r\nasync def on_ready():\r\n    await client.change_presence(activity=discord.Activity(\r\n        type=discord.ActivityType.watching,\r\n        name='Hard Ticket to Hawaii'\r\n    ))\r\n    print('Bot is ready')\r\n\r\n# Funtions that moves movie titles to the correct channels\r\n@client.event\r\nasync def on_raw_reaction_add(payload):\r\n    if str(payload.emoji) == '<:Segal:1109089566926835753>':\r\n        channel_id = payload.channel_id\r\n        channel = client.get_channel(channel_id)\r\n        message = await channel.fetch_message(payload.message_id)\r\n\r\n        if message.author != client.user:\r\n            print(f'Content: {message.content}')\r\n            watchlist_channel_id = 1108863004289798164  # Channel name steve\r\n            watchlist_channel = client.get_channel(watchlist_channel_id)\r\n\r\n            if watchlist_channel is None:\r\n                return\r\n\r\n            await watchlist_channel.send(message.content)\r\n            await message.delete()\r\n    elif str(payload.emoji) == '<:Donna:1109096237476622336>':\r\n        channel_id = payload.channel_id\r\n        channel = client.get_channel(channel_id)\r\n        message = await channel.fetch_message(payload.message_id)\r\n\r\n        if message.author != client.user:\r\n            print(f'Content: {message.content}')\r\n            watchlist_channel_id = 1108805940498665603  # Channel name sidaris\r\n            watchlist_channel = client.get_channel(watchlist_channel_id)\r\n\r\n            if watchlist_channel is None:\r\n                return\r\n\r\n            await watchlist_channel.send(message.content)\r\n            await message.delete()\r\n    elif str(payload.emoji) == '<:check_mark:1109211912488620062>':\r\n        channel_id = payload.channel_id\r\n        channel = client.get_channel(channel_id)\r\n        message = await channel.fetch_message(payload.message_id)\r\n        watchlist_channel_id = 1108801625419677777  # Channel  watcheted\r\n        watchlist_channel = client.get_channel(watchlist_channel_id)\r\n        await watchlist_channel.send(message.content)\r\n        await message.delete()\r\n        if watchlist_channel is None:\r\n            return\r\n\r\n# Help command for the bot, that shows what emojies do what.\r\n\r\n\r\nclient.run('MTEwOTA1MjM0MDIyNjUxMDkzMQ.GnAzq1.9EsPJYuEMRhHGthHntp5wz9sWnYViPflTcqQ7s')\r\n=======\r\n# This is a sample Python script.\r\n\r\n# Press Shift+F10 to execute it or replace it with your code.\r\n# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.\r\n\r\n\r\ndef print_hi(name):\r\n    # Use a breakpoint in the code line below to debug your script.\r\n    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.\r\n\r\n\r\n# Press the green button in the gutter to run the script.\r\nif __name__ == '__main__':\r\n    print_hi('PyCharm')\r\n\r\n# See PyCharm help at https://www.jetbrains.com/help/pycharm/\r\n>>>>>>> b403059e4864333b1c98a80b99553496b42c8d74\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main.py b/main.py
+--- a/main.py	(revision d6b4d247408ab98970b0ef744f4b5dd408c3053c)
++++ b/main.py	(date 1684776642266)
+@@ -67,21 +67,3 @@
+ 
+ 
+ client.run('MTEwOTA1MjM0MDIyNjUxMDkzMQ.GnAzq1.9EsPJYuEMRhHGthHntp5wz9sWnYViPflTcqQ7s')
+-=======
+-# This is a sample Python script.
+-
+-# Press Shift+F10 to execute it or replace it with your code.
+-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+-
+-
+-def print_hi(name):
+-    # Use a breakpoint in the code line below to debug your script.
+-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+-
+-
+-# Press the green button in the gutter to run the script.
+-if __name__ == '__main__':
+-    print_hi('PyCharm')
+-
+-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+->>>>>>> b403059e4864333b1c98a80b99553496b42c8d74

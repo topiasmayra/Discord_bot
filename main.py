@@ -1,10 +1,10 @@
 import discord
 from discord.ext import commands
-import subprocess
+import asyncio
 import os
 from dotenv import load_dotenv
 
-
+import IMDb_search
 
 load_dotenv()
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
@@ -13,10 +13,27 @@ intents.typing = False
 intents.presences = False
 intents.message_content = True
 intents.message_content=True
+client = discord.Client(intents=intents)
+bot = commands.Bot(command_prefix='!', intents=intents, help_command=None)
 
-bot = commands.Bot(command_prefix='!' , intents=intents)
+bot.remove_command('help')
 
 
+class help(commands.MinimalHelpCommand):
+    async def send_pages(self):
+        destination = self.get_destination()
+        embed = discord.Embed(title="Komennot", description="Lista kommenoista, sekä  kuinka käyttää bottia järjestelemään elokuvia.", colour=discord.Colour.blue())
+        embed.add_field(name="@etsi", value="Komento !etsi etsii elokuvia ohjaajan tai näyttelijän nimellä IMDB:stä ja palauttaa listan löydetyistä elokuvista.", inline=False)
+        embed.add_field(name=":<:Segal:1109089566926835753>", value="Reagoimalla <:Segal:1109089566926835753>.  Reaktio viestissä lisää viestin kanavalle nimeltään steve ja poistaa alkuperäisen viestin kanavalta, josssa reakoit viestiin", inline=False)
+        embed.add_field(name=":<:Donna:1109096237476622336>", value="Reagoimalla <:Donna:1109096237476622336>. Reaktio viestissä lisää viestin kanavalle nimeltään sidaris ja poistaa alkuperäisen viestin kanavalta, josssa reakoit viestiin", inline=False)
+        embed.add_field(name=":<:check_mark:1109211912488620062>", value="Reagoimalla <:check_mark:1109211912488620062>. Reaktio viestissä lisää viestin kanavalle nimeltään katsotut-elokuvat ja poistaa alkuperäisen viestin kanavalta, josssa reakoit viestiin", inline=False)
+        embed.add_field(name=":<:ehdotus:1111040681666936902>", value="Reagoimalla <:ehdotus:1111040681666936902>. Reaktio viestissä lisää viestin kanavalle nimeltään ehdotukset ja poistaa alkuperäisen viestin kanavalta, josssa reakoit viestiin", inline=False)
+        embed.add_field(name=":<a:DonaBlow:1111037449221705788>", value="Reagoimalla <a:DonaBlow:1111037449221705788>. Reaktio viestissä poistaa viestin kanavalta, josssa reakoit viestiin", inline=False)
+        embed.set_footer(text="<Botin tekijä: @VeikkQ#9211>")
+
+        await destination.send(embed=embed)
+
+bot.help_command =help()
 
 
 @bot.event
@@ -27,8 +44,9 @@ async def on_ready():
     ))
     print('Bot is ready')
 
-#Emoji reaction message for the bot, that deletes the message and sends it to the watchlist channel.
-@bot.event
+
+
+@client.event
 async def on_raw_reaction_add(payload):
     if str(payload.emoji) == '<:Segal:1109089566926835753>':
         channel_id = payload.channel_id
@@ -86,14 +104,18 @@ async def on_raw_reaction_add(payload):
 
 
 #Bot will message contect of message from DM to the channel.
-@bot.event
+@client.event
 async def on_message(message):
     if message.author == bot.user:
         return
+
     if isinstance(message.channel, discord.channel.DMChannel):
-        channel_id = 994331775859949660 #Channel name ehdotukset
-        channel = bot.get_channel(channel_id)
-        await channel.send(message.content)
+        channel = bot.get_channel(994331775859949660)
+
+        if channel:
+            await channel.send(f"Vastaanotin yksityisviestin käyttäjältä {message.author}: {message.content}")
+        else:
+            print("Kanavaa ei löydy!")
 
 
 # Help command for the bot, that shows what emojies do what.
@@ -101,32 +123,43 @@ async def on_message(message):
 
 
 
-import IMDb_search
 
-@bot.command()
-async def etsi(ctx):
-    await ctx.send('**Syötä näyttelijän tai ohjaajan nimi!**')
 
-    def check(m):
-        return m.author == ctx.author and m.channel == ctx.channel
 
-    try:
-        user_input = await bot.wait_for('message', check=check, timeout=30)
-        personname = user_input.content
 
-        df = IMDb_search.my_search_function(personname)
+@bot.event
+async def on_message(message):
+    if message.author == bot.user:
+        return
 
-        if not df.empty:
-            await ctx.send("**Elokuvat:**")
-            for title in df['Title']:
-                await ctx.send(title)
-        else:
-            await ctx.send("**En löytynyt elokuvia!**")
+    if message.content.startswith('!etsi'):
+        print('Etsi komento käynnistetty')
+        await message.channel.send('**Syötä näyttelijän tai ohjaajan nimi!**')
 
-    except TimeoutError:
-        await ctx.send('**Et syöttänyt ohjaajan tai näyttelijän nimeä, aikaraja ylittyi!**')
-    except Exception as e:
-        await ctx.send('**Haullasi' + ' ' + personname + 'ei löytynyt mitään.**')
-        print('Error occurred:', str(e))
+        def check(m):
+            return m.author == message.author and m.channel == message.channel
+
+        try:
+            user_input = await bot.wait_for('message', check=check, timeout=30)
+            personname = user_input.content
+
+            df = IMDb_search.my_search_function(personname)
+
+            if not df.empty:
+                await message.channel.send("**Elokuvat:**")
+                for title in df['Title']:
+                    await message.channel.send(title)
+            else:
+                await message.channel.send("**En löytynyt elokuvia!**")
+
+        except asyncio.TimeoutError:
+                await message.channel.send(f'**Et syöttänyt ohjaajan tai näyttelijän nimeä ylittyi!**')
+        except Exception as e:
+            await message.channel.send('**Haullasi' + ' ' + personname + 'ei löytynyt mitään.**')
+            print('Error occurred:', str(e))
+
+    elif message.content.startswith('!reee'):
+        print('Apua komento käynnistetty')
+
 
 bot.run(DISCORD_TOKEN)
