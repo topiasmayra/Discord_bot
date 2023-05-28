@@ -18,21 +18,6 @@ bot = commands.Bot(command_prefix='!', intents=intents,)
 
 
 
-class help(commands.MinimalHelpCommand):
-    async def send_pages(self):
-        destination = self.get_destination()
-        embed = discord.Embed(title="Komennot", description="Lista kommenoista, sekä  kuinka käyttää bottia järjestelemään elokuvia.", colour=discord.Colour.blue())
-        embed.add_field(name="@etsi", value="Komento !etsi etsii elokuvia ohjaajan tai näyttelijän nimellä IMDB:stä ja palauttaa listan löydetyistä elokuvista.", inline=False)
-        embed.add_field(name=":<:Segal:1109089566926835753>", value="Reagoimalla <:Segal:1109089566926835753>.  Reaktio viestissä lisää viestin kanavalle nimeltään steve ja poistaa alkuperäisen viestin kanavalta, josssa reakoit viestiin", inline=False)
-        embed.add_field(name=":<:Donna:1109096237476622336>", value="Reagoimalla <:Donna:1109096237476622336>. Reaktio viestissä lisää viestin kanavalle nimeltään sidaris ja poistaa alkuperäisen viestin kanavalta, josssa reakoit viestiin", inline=False)
-        embed.add_field(name=":<:check_mark:1109211912488620062>", value="Reagoimalla <:check_mark:1109211912488620062>. Reaktio viestissä lisää viestin kanavalle nimeltään katsotut-elokuvat ja poistaa alkuperäisen viestin kanavalta, josssa reakoit viestiin", inline=False)
-        embed.add_field(name=":<:ehdotus:1111040681666936902>", value="Reagoimalla <:ehdotus:1111040681666936902>. Reaktio viestissä lisää viestin kanavalle nimeltään ehdotukset ja poistaa alkuperäisen viestin kanavalta, josssa reakoit viestiin", inline=False)
-        embed.add_field(name=":<a:DonaBlow:1111037449221705788>", value="Reagoimalla <a:DonaBlow:1111037449221705788>. Reaktio viestissä poistaa viestin kanavalta, josssa reakoit viestiin", inline=False)
-        embed.set_footer(text="<Botin tekijä: @VeikkQ#9211>")
-
-        await destination.send(embed=embed)
-
-bot.help_command =help()
 
 
 @bot.event
@@ -53,21 +38,32 @@ async def on_raw_reaction_add(payload):
         message = await channel.fetch_message(payload.message_id)
 
 
+        print(f'Content: {message.content}')
+        watchlist_channel_id = 1108863004289798164  # Channel name steve
+        watchlist_channel = bot.get_channel(watchlist_channel_id)
+
+        if watchlist_channel is None:
+            return
+
+        await watchlist_channel.send(message.content)
+        await message.delete()
+
+
     elif str(payload.emoji) == '<:Donna:1109096237476622336>':
         channel_id = payload.channel_id
         channel = bot.get_channel(channel_id)
         message = await channel.fetch_message(payload.message_id)
 
-        if message.author != bot.user:
-            print(f'Content: {message.content}')
-            watchlist_channel_id = 1108805940498665603  # Channel name sidaris
-            watchlist_channel = bot.get_channel(watchlist_channel_id)
 
-            if watchlist_channel is None:
-                return
+        print(f'Content: {message.content}')
+        watchlist_channel_id = 1108805940498665603  # Channel name sidaris
+        watchlist_channel = bot.get_channel(watchlist_channel_id)
 
-            await watchlist_channel.send(message.content)
-            await message.delete()
+        if watchlist_channel is None:
+            return
+
+        await watchlist_channel.send(message.content)
+        await message.delete()
     elif str(payload.emoji) == '<:check_mark:1109211912488620062>':
         channel_id = payload.channel_id
         channel = bot.get_channel(channel_id)
@@ -105,6 +101,7 @@ async def on_raw_reaction_add(payload):
 #Bot will message contect of message from DM to the channel.
 @bot.event
 async def on_message(message):
+
     if message.author == bot.user:
         return
 
