@@ -14,9 +14,9 @@ intents.presences = False
 intents.message_content = True
 intents.message_content=True
 client = discord.Client(intents=intents)
-bot = commands.Bot(command_prefix='!', intents=intents, help_command=None)
+bot = commands.Bot(command_prefix='!', intents=intents,)
 
-bot.remove_command('help')
+
 
 
 class help(commands.MinimalHelpCommand):
@@ -104,7 +104,7 @@ async def on_raw_reaction_add(payload):
 
 
 #Bot will message contect of message from DM to the channel.
-@client.event
+@bot.event
 async def on_message(message):
     if message.author == bot.user:
         return
@@ -127,7 +127,7 @@ async def on_message(message):
 
 
 
-@bot.event
+@client.event
 async def on_message(message):
     if message.author == bot.user:
         return
