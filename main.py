@@ -75,7 +75,7 @@ async def on_raw_reaction_add(payload):
         if watchlist_channel is None:
             return
 
-    elif str(payload.emoji) == '<a:DonaBlow:1111037449221705788>':
+    elif str(payload.emoji) == '<:kaarme:1130919020644802660>':
         channel_id = payload.channel_id
         channel = bot.get_channel(channel_id)
         message = await channel.fetch_message(payload.message_id)
